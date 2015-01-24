@@ -40,4 +40,4 @@
    [Password to level3]
    ```
 
-* To be perfectly honest, I'm not totally sure why this works. I'll look into a bit more to figure out exactly why this causes a SIGFPE.
+* To be perfectly honest, I'm not totally sure why this works. I played around with these numbers for a little while and I just happened to get the right ones. I'll look into a bit more to figure out exactly why this causes a SIGFPE.
