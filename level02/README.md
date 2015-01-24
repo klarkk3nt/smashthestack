@@ -52,7 +52,7 @@ Update: After doing some more playing in gdb and refreshing my mind a bit, I thi
 understand the issue. Signed numbers are represented by the most significant
 bit being 1. So the number 2147483647 is:
 `0x7fffffff -> 0111 1111 1111 1111 1111 1111 1111 1111`
-and that is the largest possible 32 bit signed integer value. So when we add 1 to
+and that is the largest positive 32 bit signed integer value. So when we add 1 to
 it it becomes 2147483648 which is represented as:
 `0x80000000 -> 1000 0000 0000 0000 0000 0000 0000 0000`
 Now we've overflowed and we have a very large negative number. When diving by -1,
