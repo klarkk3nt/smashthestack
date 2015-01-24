@@ -48,15 +48,12 @@
 these numbers for a little while and I just happened to get the right ones. I'll
 look into a bit more to figure out exactly why this causes a SIGFPE.
 
-Update: After doing some more playing in gdb and refreshing my mind a bit, I think I
-understand the issue. Signed numbers are represented by the most significant
-bit being 1. So the number 2147483647 is:
-`0x7fffffff -> 0111 1111 1111 1111 1111 1111 1111 1111`
-and that is the largest positive 32 bit signed integer value. So when we add 1 to
-it it becomes 2147483648 which is represented as:
-`0x80000000 -> 1000 0000 0000 0000 0000 0000 0000 0000`
-Now we've overflowed and we have a very large negative number. When diving by -1,
-you give the dividend the opposite sign. So when we try to take the opposite sign
-of -2147483648 the answer would obviously be 2147483648. The problem there is that
-that number can't be represented in the world of 32 bit signed integers! Hence the
-SIGFPE. I believe that's the full explanation.
+Update: After doing some more playing in gdb and refreshing my mind a bit, I think I understand the issue. Signed numbers are represented by the most significant bit being 1. So the number 2147483647 is:
+```
+0x7fffffff -> 0111 1111 1111 1111 1111 1111 1111 1111
+```
+and that is the largest positive 32 bit signed integer value. So when we add 1 to it it becomes 2147483648 (or -2147483648 in this specific case) which is represented as:
+```
+0x80000000 -> 1000 0000 0000 0000 0000 0000 0000 0000
+```
+Now we've overflowed and we have a very large negative number. When diving by -1, you give the dividend the opposite sign. So when we try to take the opposite sign of -2147483648 the answer would obviously be 2147483648. The problem is that that number can't be represented in the world of 32 bit signed integers! Hence the SIGFPE. I believe that's the full explanation.
