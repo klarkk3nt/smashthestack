@@ -27,5 +27,5 @@
    Enter the 3 digit passcode to enter: 271
    Congrats you found it, now read the password for level2 from /home/level2/.pass
    sh-4.2$ cat /home/level2/.pass
-   3ywr07ZFw5IsdKzU
+   [This is where the password for level2 would be, but you need to solve it to get it :)]
    ```
