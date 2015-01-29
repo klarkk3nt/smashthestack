@@ -7,9 +7,9 @@ The source code:
 #include <string.h>
 
 enum{
-LANG_ENGLISH,
-LANG_FRANCAIS,
-LANG_DEUTSCH,
+    LANG_ENGLISH,
+    LANG_FRANCAIS,
+    LANG_DEUTSCH,
 };
 
 int language = LANG_ENGLISH;
@@ -56,7 +56,7 @@ int main(int argc, char **argv, char **env){
 
 At first glance, we can see we have a structure with a username and password buffer and that argv[1] and argv[2] are copied into using the sizeof operator which won't let us copy more into those buffers than is allowed. We also see that they're checking the environment variable LANG to see its value so they know what language to greet us with in the greetuser() function. 
 
-One thing to notice, though, is that they're not checking to make sure the username and password buffers are null terminated. B eing that they're adjacent in memory, this means that if we put 40 bytes into the username buffer, we can sort of connect it to the password buffer making it one buffer with a max of 72 bytes.
+One thing to notice, though, is that they're not checking to make sure the username and password buffers are null terminated. Being that they're adjacent in memory, this means that if we put 40 bytes into the username buffer, we can sort of connect it to the password buffer making it one buffer with a max of 72 bytes.
 
 The entire user structure is passed into the greetuser() function meaning that our 72 byte buffer is passed into it.
 ```
@@ -138,7 +138,7 @@ Program received signal SIGSEGV, Segmentation fault.
 0xbffffbf0: 0x42424242  0x42424242  0x00000000  0x00000001
 ```
 
-Things are looking good. The stack doesn't seem to move around at all so we can need to figure out exactly where we're overwriting the return address and overwrite it with the address 0xbffffbb4 which points to the start of the As and replace the start of the As with the same shellcode we used for the previous level.
+Things are looking good. The stack doesn't seem to move around at all so we need to figure out exactly where we're overwriting the return address and overwrite it with the address 0xbffffbb4 which points to the start of the As and replace the start of the As with the same shellcode we used for the previous level.
 ```
 (gdb) run $(python -c 'print "A"*40') $(python -c 'print "B"*24 + "CCCCDDDD"')
 Starting program: /levels/level06 $(python -c 'print "A"*40') $(python -c 'print "B"*24 + "CCCCDDDD"')
