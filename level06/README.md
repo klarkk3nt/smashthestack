@@ -54,7 +54,7 @@ int main(int argc, char **argv, char **env){
 }
 ```
 
-At first glance, we can see we have a structure with a username and password buffer and that argv[1] and argv[2] are copied into using the sizeof operator which won't let us copy more into those buffers than is allowed. We also see that they're checking the environment variable LANG to see its value so they know what language with which to greet us in the greetuser() function. 
+At first glance, we can see we have a structure with a username and password buffer and that argv[1] and argv[2] are copied into using the sizeof operator which won't let us copy more into those buffers than is allowed. We also see that they're checking the environment variable LANG to see its value so they know what language to greet us with in the greetuser() function. 
 
 One thing to notice, though, is that they're not checking to make sure the username and password buffers are null terminated. B eing that they're adjacent in memory, this means that if we put 40 bytes into the username buffer, we can sort of connect it to the password buffer making it one buffer with a max of 72 bytes.
 
