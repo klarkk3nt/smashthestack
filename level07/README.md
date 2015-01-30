@@ -2,7 +2,7 @@ The source code for this level is in level07.c
 
 We see that the `count` variable needs to be set to 0x574f4c46 in order for us to win. But there's a check at the beginning that prevents us from just simply passing in a positive number. We need to make the size parameter for memcpy into something that will overflow the `buf[10]` buffer and overwrite the `count` variable. Let's see how far apart they are in memory.
 ```
-evel7@io:/levels$ gdb -q level07
+level7@io:/levels$ gdb -q level07
 Reading symbols from /levels/level07...done.
 (gdb) set disassembly-flavor intel
 (gdb) display/10i $eip
