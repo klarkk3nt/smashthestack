@@ -1,6 +1,6 @@
 The source code for this level is in level07.c
 
-We see that the `count` variable needs to be set to 0x574f4c46 in order for us to win. But there's a check at the beginning that prevents us from just simply passing in a positive number. We need to make the size parameter for memcpy into something that will overflow the `buf[10]` buffer and overwrite the count variable. Let's see how far apart they are in memory.
+We see that the `count` variable needs to be set to 0x574f4c46 in order for us to win. But there's a check at the beginning that prevents us from just simply passing in a positive number. We need to make the size parameter for memcpy into something that will overflow the `buf[10]` buffer and overwrite the `count` variable. Let's see how far apart they are in memory.
 ```
 evel7@io:/levels$ gdb -q level07
 Reading symbols from /levels/level07...done.
@@ -45,7 +45,7 @@ Breakpoint 1, 0x0804841a in main ()
 0xbffffc8c:  0x00000001
 ```
 
-After looking at the disassembly, we can see that the count variable is at `[ebp-0xc]` and right before we call memcpy, the arguments for destination, source, and size are on the stack in that order. So the buffer `buf[10]` starts at 0xbffffc50 and count is at 0xbffffc8c.
+After looking at the disassembly, we can see that the `count` variable is at `[ebp-0xc]` and right before we call memcpy, the arguments for destination, source, and size are on the stack in that order. So the buffer `buf[10]` starts at 0xbffffc50 and `count` is at 0xbffffc8c.
 ```
 (gdb) p 0xbffffc8c - 0xbffffc50
 $1 = 60
@@ -74,7 +74,7 @@ level7@io:/tmp/ZZZ$ ./test -1 AAAA
 fffffffc
 ```
 
-Since -4 is below 10, we can pass the first check `count >= 10`. It'll set the size argument for memcpy to be 0xfffffffc, and considering that that argument is treated as an unsigned int, that means that we're going to write WAY too much data. We need a smaller number. Let's try to cause an overflow by passing in a huge negative number and seeing the result is.
+Since -4 is below 10, we can pass the first check `count >= 10`. It'll set the size argument for memcpy to be 0xfffffffc, and considering that memcpy treats the size as an unsigned int, that means that we're going to write WAY too much data. We need a smaller number. Let's try to cause an overflow by passing in a huge negative number and seeing what the result is.
 ```
 level7@io:/tmp/ZZZ$ ./test -2147483648 AAAAA
 0
@@ -106,4 +106,4 @@ sh-4.2$ cat /home/level8/.pass
 [Password for level8]
 ```
 
-(*)If you're wondering why -2147483648 gives us 0 when you run that test program, go back to the walkthrough forlevel 2 and see if you can figure it out
+(*)If you're wondering why -2147483648 gives us 0 when you run that test program, go back to the walkthrough for level 2 and see if you can figure it out
