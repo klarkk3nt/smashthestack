@@ -50,4 +50,4 @@ and that is the largest positive 32 bit signed integer value. So when we add 1 t
 ```
 0x80000000 -> 1000 0000 0000 0000 0000 0000 0000 0000
 ```
-Now we've overflowed and we have a very large negative number. When diving by -1, you give the dividend the opposite sign. So when we try to take the opposite sign of -2147483648 the answer would obviously be 2147483648. The problem is that that number can't be represented in the world of 32 bit signed integers! Hence the SIGFPE. I believe that's the full explanation.
+Now we've wrapped back around and we have a very large negative number. When we try to divide -2147483648 by -1 the answer would obviously be 2147483648. The problem is that that number can't be represented in the world of 32 bit signed integers. Hence the SIGFPE. I believe that's the full explanation.
